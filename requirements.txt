@@ -1,0 +1,5 @@
+# DataSonifier - обновленные версии для Mac
+numpy==1.21.6
+scipy==1.7.3
+matplotlib==3.5.3
+soundfile==0.12.1
