@@ -1,4 +1,4 @@
-# DataSonifier - обновленные версии для Mac
+# DataSonifier
 numpy==1.21.6
 scipy==1.7.3
 matplotlib==3.5.3
