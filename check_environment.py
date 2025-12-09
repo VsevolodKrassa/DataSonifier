@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Скрипт для проверки окружения DataSonifier
+DataSonifier Environment Check Script
 """
 
 import sys
@@ -13,33 +13,33 @@ REQUIRED_VERSIONS = {
 }
 
 def check_version(actual, required, name):
-    """Проверяет соответствие версии"""
+    """Checks version compatibility"""
     try:
         actual_tuple = tuple(map(int, actual.split('.')[:3]))
         required_tuple = tuple(map(int, required.split('.')[:3]))
         if actual_tuple == required_tuple:
-            return True, f"✅ {name}: {actual} - OK"
+            return True, f" {name}: {actual} - OK"
         else:
-            return False, f"❌ {name}: {actual} != {required} (требуется)"
+            return False, f" {name}: {actual} != {required} (required)"
     except Exception as e:
-        return False, f"❌ {name}: ошибка проверки версии - {e}"
+        return False, f" {name}: version check error - {e}"
 
 def check_environment():
-    print("🔍 Проверка окружения DataSonifier...")
+    print(" Checking DataSonifier environment...")
     print()
     
-    # Проверка Python
+    # Check Python version
     python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
     print(f"Python: {python_version}")
     if sys.version_info >= (3, 7):
-        print("✅ Python 3.7+ - OK")
+        print(" Python 3.7+ - OK")
     else:
-        print("❌ Требуется Python 3.7+")
+        print(" Python 3.7+ required")
         return False
     
     print()
     
-    # Проверка библиотек
+    # Check libraries
     all_ok = True
     for package, required_version in REQUIRED_VERSIONS.items():
         try:
@@ -52,18 +52,19 @@ def check_environment():
                 all_ok = False
                 
         except ImportError:
-            print(f"❌ {package}: НЕ УСТАНОВЛЕН")
+            print(f" {package}: NOT INSTALLED")
             all_ok = False
     
     print()
     if all_ok:
-        print("✅ Окружение настроено правильно!")
-        print("Запустите: python datasonifier.py путь/к/файлу.txt")
+        print(" Environment is properly configured!")
+        print("Run: python datasonifier.py path/to/file.txt")
     else:
-        print("❌ Окружение не соответствует требованиям")
-        print("⚠️ Установите точные версии: pip install -r requirements.txt")
+        print(" Environment does not meet requirements")
+        print(" Install exact versions: pip install -r requirements.txt")
     
     return all_ok
 
 if __name__ == "__main__":
     check_environment()
+    
