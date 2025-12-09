@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-DataSonifier - программа для сонификации данных
-Разработана art&science группой KVEF
+DataSonifier - data sonification program
+Developed by art&science group KVEF
 """
 
 import sys
@@ -14,23 +14,23 @@ import soundfile as sf
 from pathlib import Path
 
 def check_version(actual, required, name):
-    """Проверяет соответствие версии"""
+    """Check version compatibility"""
     try:
         actual_tuple = tuple(map(int, actual.split('.')[:3]))
         required_tuple = tuple(map(int, required.split('.')[:3]))
         if actual_tuple != required_tuple:
-            print(f"❌ {name} {actual} != {required} (требуется точное соответствие)")
+            print(f" {name} {actual} != {required} (exact match required)")
             return False
         return True
     except Exception as e:
-        print(f"❌ Ошибка проверки версии {name}: {e}")
+        print(f" Version check error for {name}: {e}")
         return False
 
 def check_environment():
-    """Проверяет все зависимости"""
+    """Check all dependencies"""
     if sys.version_info < (3, 7):
-        print("❌ DataSonifier требует Python 3.7 или выше!")
-        print(f"💡 Текущая версия: {sys.version}")
+        print(" DataSonifier requires Python 3.7 or higher!")
+        print(f" Current version: {sys.version}")
         return False
 
     try:
@@ -38,7 +38,7 @@ def check_environment():
         if not check_version(np.__version__, "1.21.6", "NumPy"):
             return False
     except ImportError:
-        print("❌ NumPy не установлен!")
+        print(" NumPy is not installed!")
         return False
 
     try:
@@ -46,7 +46,7 @@ def check_environment():
         if not check_version(scipy.__version__, "1.7.3", "SciPy"):
             return False
     except ImportError:
-        print("❌ SciPy не установлен!")
+        print(" SciPy is not installed!")
         return False
 
     try:
@@ -54,7 +54,7 @@ def check_environment():
         if not check_version(matplotlib.__version__, "3.5.3", "Matplotlib"):
             return False
     except ImportError:
-        print("❌ Matplotlib не установлен!")
+        print(" Matplotlib is not installed!")
         return False
 
     try:
@@ -62,7 +62,7 @@ def check_environment():
         if not check_version(sf.__version__, "0.12.1", "SoundFile"):
             return False
     except ImportError:
-        print("❌ SoundFile не установлен!")
+        print(" SoundFile is not installed!")
         return False
 
     return True
@@ -76,22 +76,22 @@ class DataSonifier:
 
     def print_banner(self):
         banner = """
-        ╔═══════════════════════════════════════╗
-        ║          DataSonifier v1.0            ║
-        ║    Преобразование данных в звук       ║
-        ║                                       ║
-        ║        Open Source by KVEF            ║
-        ║    art&science research group         ║
-        ╚═══════════════════════════════════════╝
+        +=======================================+
+        |          DataSonifier v1.0            |
+        |       Data to Sound Conversion        |
+        |                                       |
+        |        Open Source by KVEF            |
+        |    art&science research group         |
+        +=======================================+
         """
         print(banner)
-        print("📝 Использование: python datasonifier.py [путь/к/файлу.txt]")
+        print(" Usage: python datasonifier.py [path/to/file.txt]")
 
     def load_file(self, filename):
-        print(f"📁 Загружаю файл: {filename}")
+        print(f" Loading file: {filename}")
         
         if not os.path.exists(filename):
-            print(f"❌ Файл не найден!")
+            print(f" File not found!")
             return False
         
         try:
@@ -102,17 +102,17 @@ class DataSonifier:
             self.raw_data = self._parse_data(data_lines)
             
             if len(self.raw_data) == 0:
-                print("❌ Нет данных для обработки!")
+                print(" No data to process!")
                 return False
             
-            print(f"✅ Загружено {len(self.raw_data):,} точек")
+            print(f" Loaded {len(self.raw_data):,} data points")
             if 'Rate' in self.metadata:
                 duration = len(self.raw_data) / self.metadata['Rate']
-                print(f"   • Длительность: {duration:.2f} сек")
+                print(f"   • Duration: {duration:.2f} sec")
             
             return True
         except Exception as e:
-            print(f"❌ Ошибка: {e}")
+            print(f" Error: {e}")
             return False
 
     def _parse_metadata(self, lines):
@@ -170,7 +170,7 @@ class DataSonifier:
 
     def analyze_data(self):
         if self.raw_data is None:
-            print("❌ Данные не загружены!")
+            print(" Data not loaded!")
             return False
 
         data_min = np.min(self.raw_data)
@@ -193,21 +193,21 @@ class DataSonifier:
             'suggested_upper_threshold': suggested_upper
         }
 
-        print("\n📊 Анализ данных:")
-        print(f"   • Минимальное значение: {stats['min']:.4f} V")
-        print(f"   • Максимальное значение: {stats['max']:.4f} V")
-        print(f"   • Среднее: {stats['mean']:.4f} V")
-        print(f"   • Стандартное отклонение: {stats['std']:.4f} V")
-        print(f"   • Предложенный нижний порог: {stats['suggested_lower_threshold']:.3f}")
-        print(f"   • Предложенный верхний порог: {stats['suggested_upper_threshold']:.3f}")
-        print(f"   • Динамический диапазон: {stats['max'] - stats['min']:.4f} V")
-        print(f"   • Пороги задаются в диапазоне [0,1] после нормализации")
+        print("\n Data analysis:")
+        print(f" Minimum value: {stats['min']:.4f} V")
+        print(f" Maximum value: {stats['max']:.4f} V")
+        print(f" Mean: {stats['mean']:.4f} V")
+        print(f" Standard deviation: {stats['std']:.4f} V")
+        print(f" Suggested lower threshold: {stats['suggested_lower_threshold']:.3f}")
+        print(f" Suggested upper threshold: {stats['suggested_upper_threshold']:.3f}")
+        print(f" Dynamic range: {stats['max'] - stats['min']:.4f} V")
+        print(f" Thresholds are set in range [0,1] after normalization")
 
         return stats
 
     def plot_raw_data(self):
         if self.raw_data is None:
-            print("❌ Данные не загружены!")
+            print(" Data not loaded!")
             return False
         
         sample_rate = self.metadata.get('Rate', 1000)
@@ -216,8 +216,8 @@ class DataSonifier:
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
         
         ax1.plot(time_axis, self.raw_data, alpha=0.8, linewidth=0.5, color='blue')
-        ax1.set_title('Исходные данные')
-        ax1.set_ylabel('Напряжение (В)')
+        ax1.set_title('Raw Data')
+        ax1.set_ylabel('Voltage (V)')
         ax1.grid(True, alpha=0.3)
         
         data_min = np.min(self.raw_data)
@@ -229,12 +229,12 @@ class DataSonifier:
             normalized_data = np.zeros_like(self.raw_data)
         
         ax2.plot(time_axis, normalized_data, alpha=0.8, linewidth=0.5, color='green')
-        ax2.set_title('Нормализованные данные')
-        ax2.set_xlabel('Время (секунды)')
-        ax2.set_ylabel('Нормализованное значение [0,1]')
+        ax2.set_title('Normalized Data')
+        ax2.set_xlabel('Time (seconds)')
+        ax2.set_ylabel('Normalized Value [0,1]')
         ax2.grid(True, alpha=0.3)
         
-        ax2.text(0.02, 0.98, f'Диапазон: [{data_min:.4f}, {data_max:.4f}] В → [0, 1]', 
+        ax2.text(0.02, 0.98, f'Range: [{data_min:.4f}, {data_max:.4f}] V → [0, 1]', 
                  transform=ax2.transAxes, verticalalignment='top',
                  bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
         
@@ -243,33 +243,33 @@ class DataSonifier:
         return True
 
     def get_processing_parameters(self, stats):
-        print("\n🎛  НАСТРОЙКА ПАРАМЕТРОВ")
-        print("   Пороги задаются в диапазоне [0,1]")
+        print("\n PARAMETER SETUP")
+        print("   Thresholds are set in range [0,1]")
         
         lower_threshold_input = input(
-            f"Нижний порог [0-1] [рекомендуется {stats['suggested_lower_threshold']:.3f}]: "
+            f"Lower threshold [0-1] [recommended {stats['suggested_lower_threshold']:.3f}]: "
         ).strip()
         lower_threshold = float(lower_threshold_input) if lower_threshold_input else stats['suggested_lower_threshold']
         
         upper_threshold_input = input(
-            f"Верхний порог [0-1] [рекомендуется {stats['suggested_upper_threshold']:.3f}]: "
+            f"Upper threshold [0-1] [recommended {stats['suggested_upper_threshold']:.3f}]: "
         ).strip()
         upper_threshold = float(upper_threshold_input) if upper_threshold_input else stats['suggested_upper_threshold']
         
-        smooth_input = input("Коэффициент сглаживания (0-1) [0.3]: ").strip()
+        smooth_input = input("Smoothing factor (0-1) [0.3]: ").strip()
         smooth_factor = float(smooth_input) if smooth_input else 0.3
         
-        min_freq_input = input("Минимальная частота (Гц) [100]: ").strip()
+        min_freq_input = input("Minimum frequency (Hz) [100]: ").strip()
         min_freq = float(min_freq_input) if min_freq_input else 100.0
         
-        max_freq_input = input("Максимальная частота (Гц) [4000]: ").strip()
+        max_freq_input = input("Maximum frequency (Hz) [4000]: ").strip()
         max_freq = float(max_freq_input) if max_freq_input else 4000.0
         
-        speed_input = input("Скорость (%) [100]: ").strip()
+        speed_input = input("Speed (%) [100]: ").strip()
         speed_percentage = float(speed_input) if speed_input else 100.0
         
         if lower_threshold >= upper_threshold:
-            print("⚠️  Нижний порог должен быть меньше верхнего!")
+            print(" Lower threshold must be less than upper threshold!")
             lower_threshold = stats['suggested_lower_threshold']
             upper_threshold = stats['suggested_upper_threshold']
         
@@ -285,7 +285,7 @@ class DataSonifier:
         return params
 
     def process_data(self, params):
-        print("\n⚙️  Обрабатываю данные...")
+        print("\n Processing data...")
         
         original_min = np.min(self.raw_data)
         original_max = np.max(self.raw_data)
@@ -295,8 +295,8 @@ class DataSonifier:
         else:
             normalized_all = np.zeros_like(self.raw_data)
         
-        print(f"   • Исходный диапазон: [{original_min:.4f}, {original_max:.4f}] V")
-        print(f"   • Нормализован к: [0, 1]")
+        print(f" Original range: [{original_min:.4f}, {original_max:.4f}] V")
+        print(f" Normalized to: [0, 1]")
         
         self.processed_data = normalized_all.copy()
         
@@ -309,9 +309,9 @@ class DataSonifier:
         points_in_range = np.sum((self.processed_data >= params['lower_threshold']) & 
                                 (self.processed_data <= params['upper_threshold']))
         
-        print(f"   • Нижний порог: {params['lower_threshold']}")
-        print(f"   • Верхний порог: {params['upper_threshold']}")
-        print(f"   • Точек в диапазоне: {points_in_range:,}")
+        print(f" Lower threshold: {params['lower_threshold']}")
+        print(f" Upper threshold: {params['upper_threshold']}")
+        print(f" Points in range: {points_in_range:,}")
         
         if params['smooth_factor'] > 0:
             window_size = max(3, int(len(self.processed_data) * params['smooth_factor'] * 0.01))
@@ -321,13 +321,13 @@ class DataSonifier:
             if window_size > 1 and window_size < len(self.processed_data):
                 window = np.ones(window_size) / window_size
                 self.processed_data = np.convolve(self.processed_data, window, mode='same')
-                print(f"   • Сглаживание: окно {window_size} точек")
+                print(f" Smoothing: {window_size} point window")
         
         return True
 
     def generate_audio(self, params):
-        """Генерирует аудиосигнал с чистым синусом"""
-        print("\n🎵 Генерирую аудио (чистый синус)...")
+        """Generate audio signal with pure sine wave"""
+        print("\n Generating audio (pure sine)...")
         
         sample_rate = self.metadata.get('Rate', 1000)
         speed_factor = params['speed_percentage'] / 100.0
@@ -341,13 +341,13 @@ class DataSonifier:
                 if num_samples > 0:
                     resampled_data = signal.resample(self.processed_data, num_samples)
                 else:
-                    print("❌ Ошибка ресемплирования")
+                    print(" Resampling error")
                     return False
             except Exception as e:
-                print(f"❌ Ошибка: {e}")
+                print(f" Error: {e}")
                 return False
         else:
-            print("❌ Нет данных для обработки")
+            print(" No data to process")
             return False
         
         frequencies = params['min_freq'] + resampled_data * (params['max_freq'] - params['min_freq'])
@@ -355,8 +355,8 @@ class DataSonifier:
         t_audio = np.arange(len(frequencies)) / target_sample_rate
         audio_data = np.sin(2 * np.pi * frequencies * t_audio)
         
-        # Антиалиасинг-фильтр
-        print("   • Применяю антиалиасинг-фильтр...")
+        # Anti-aliasing filter
+        print("   • Applying anti-aliasing filter...")
         nyquist_freq = target_sample_rate / 2
         cutoff_freq = min(params['max_freq'] * 1.5, nyquist_freq * 0.95)
         
@@ -365,21 +365,21 @@ class DataSonifier:
         filtered_audio = lfilter(filter_taps, 1.0, audio_data)
         
         self.audio_data = filtered_audio
-        self.audio_data = self.audio_data * 0.5  # уменьшаем громкость
+        self.audio_data = self.audio_data * 0.5  # reduce volume
         self.audio_data = np.clip(self.audio_data, -0.99, 0.99)
         
         duration = len(self.audio_data) / target_sample_rate
-        print(f"✅ Аудио сгенерировано:")
-        print(f"   • Длительность: {duration:.2f} сек")
-        print(f"   • Частоты: {params['min_freq']}-{params['max_freq']} Гц")
-        print(f"   • Режим: чистый синус (без гармоник)")
-        print(f"   • Антиалиасинг: фильтр до {cutoff_freq:.0f} Гц")
+        print(f" Audio generated:")
+        print(f" Duration: {duration:.2f} sec")
+        print(f" Frequencies: {params['min_freq']}-{params['max_freq']} Hz")
+        print(f" Mode: pure sine wave (no harmonics)")
+        print(f" Anti-aliasing: filter up to {cutoff_freq:.0f} Hz")
         
         return True
 
     def save_audio(self, filename=None):
         if self.audio_data is None:
-            print("❌ Аудио не сгенерировано!")
+            print(" Audio not generated!")
             return False
         
         if filename is None:
@@ -388,16 +388,16 @@ class DataSonifier:
         try:
             sf.write(filename, self.audio_data, 44100)
             file_size = os.path.getsize(filename) / (1024 * 1024)
-            print(f"💾 Файл сохранен: {filename} ({file_size:.2f} МБ)")
+            print(f" File saved: {filename} ({file_size:.2f} MB)")
             return True
         except Exception as e:
-            print(f"❌ Ошибка: {e}")
+            print(f" Error: {e}")
             return False
 
     def plot_processed_comparison(self, params):
-        """Показывает сравнение данных и спектрограмму аудио"""
+        """Show data comparison and audio spectrogram"""
         if self.raw_data is None or self.processed_data is None or self.audio_data is None:
-            print("❌ Данные не обработаны или аудио не сгенерировано!")
+            print(" Data not processed or audio not generated!")
             return False
         
         sample_rate = self.metadata.get('Rate', 1000)
@@ -413,56 +413,56 @@ class DataSonifier:
         
         in_range_mask = (self.processed_data >= params['lower_threshold']) & (self.processed_data <= params['upper_threshold'])
         
-        # 4 графика в одном окне (2x2)
+        # 4 plots in one window (2x2)
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 10))
         
-        # 1. Исходные данные
+        # 1. Raw data
         ax1.plot(time_axis_raw, self.raw_data, alpha=0.8, linewidth=0.5, color='blue')
-        ax1.set_title('1. Исходные данные')
-        ax1.set_ylabel('Напряжение (В)')
+        ax1.set_title('1. Raw Data')
+        ax1.set_ylabel('Voltage (V)')
         ax1.grid(True, alpha=0.3)
         
-        # 2. Нормализованные данные с порогами
+        # 2. Normalized data with thresholds
         ax2.plot(time_axis_raw, normalized_raw, alpha=0.8, linewidth=0.5, color='orange')
-        ax2.axhline(y=params['lower_threshold'], color='red', linestyle='--', alpha=0.7, label=f'Нижний порог ({params["lower_threshold"]:.3f})')
-        ax2.axhline(y=params['upper_threshold'], color='green', linestyle='--', alpha=0.7, label=f'Верхний порог ({params["upper_threshold"]:.3f})')
-        ax2.set_title('2. Нормализованные данные с порогами')
-        ax2.set_ylabel('Нормализованное значение')
+        ax2.axhline(y=params['lower_threshold'], color='red', linestyle='--', alpha=0.7, label=f'Lower threshold ({params["lower_threshold"]:.3f})')
+        ax2.axhline(y=params['upper_threshold'], color='green', linestyle='--', alpha=0.7, label=f'Upper threshold ({params["upper_threshold"]:.3f})')
+        ax2.set_title('2. Normalized Data with Thresholds')
+        ax2.set_ylabel('Normalized Value')
         ax2.legend()
         ax2.grid(True, alpha=0.3)
         
-        # 3. Данные в пределах порогов
+        # 3. Data within thresholds
         ax3.plot(time_axis_processed[in_range_mask], self.processed_data[in_range_mask], 
                  alpha=0.8, linewidth=0.5, color='green')
-        ax3.set_title('3. Данные в пределах порогов')
-        ax3.set_xlabel('Время (секунды)')
-        ax3.set_ylabel('Нормализованное значение')
+        ax3.set_title('3. Data Within Thresholds')
+        ax3.set_xlabel('Time (seconds)')
+        ax3.set_ylabel('Normalized Value')
         ax3.grid(True, alpha=0.3)
         
-        # 4. Спектрограмма аудио
+        # 4. Audio spectrogram
         if self.audio_data is not None and len(self.audio_data) > 0:
             audio_sample_rate = 44100
-            # Вычисляем спектрограмму
+            # Calculate spectrogram
             f, t, Sxx = spectrogram(self.audio_data, audio_sample_rate, nperseg=1024, noverlap=512)
             
-            # Ограничиваем частотный диапазон для лучшей визуализации
+            # Limit frequency range for better visualization
             max_display_freq = params['max_freq'] * 2
             freq_mask = (f >= params['min_freq'] * 0.5) & (f <= max_display_freq)
             f_filtered = f[freq_mask]
             Sxx_filtered = Sxx[freq_mask, :]
             
-            # Отображаем спектрограмму в логарифмической шкале
+            # Display spectrogram in logarithmic scale
             im = ax4.pcolormesh(t, f_filtered, 10 * np.log10(Sxx_filtered + 1e-10), 
                                shading='gouraud', cmap='viridis')
-            ax4.set_title('4. Спектрограмма аудио')
-            ax4.set_xlabel('Время (секунды)')
-            ax4.set_ylabel('Частота (Гц)')
+            ax4.set_title('4. Audio Spectrogram')
+            ax4.set_xlabel('Time (seconds)')
+            ax4.set_ylabel('Frequency (Hz)')
             
-            # Добавляем цветовую шкалу
-            plt.colorbar(im, ax=ax4, label='Мощность (дБ)')
+            # Add color bar
+            plt.colorbar(im, ax=ax4, label='Power (dB)')
             
-            # Добавляем информацию о частотном диапазоне
-            freq_info = f'Диапазон: {params["min_freq"]}-{params["max_freq"]} Гц'
+            # Add frequency range information
+            freq_info = f'Range: {params["min_freq"]}-{params["max_freq"]} Hz'
             
             ax4.axhline(y=params['min_freq'], color='white', linestyle='--', alpha=0.7, linewidth=1)
             ax4.axhline(y=params['max_freq'], color='white', linestyle='--', alpha=0.7, linewidth=1)
@@ -476,28 +476,28 @@ class DataSonifier:
         return True
 
     def plot_spectrogram_detail(self, params):
-        """Детальная визуализация спектрограммы аудио"""
+        """Detailed audio spectrogram visualization"""
         if self.audio_data is None:
-            print("❌ Аудио не сгенерировано!")
+            print(" Audio not generated!")
             return False
         
         audio_sample_rate = 44100
         
-        # Создаем фигуру с двумя субплoтами
+        # Create figure with two subplots
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(15, 10))
         
-        # 1. Временная область аудио
+        # 1. Audio time domain
         time_axis = np.arange(len(self.audio_data)) / audio_sample_rate
         ax1.plot(time_axis, self.audio_data, alpha=0.8, linewidth=0.5, color='purple')
-        ax1.set_title('Аудиосигнал (временная область)')
-        ax1.set_xlabel('Время (секунды)')
-        ax1.set_ylabel('Амплитуда')
+        ax1.set_title('Audio Signal (Time Domain)')
+        ax1.set_xlabel('Time (seconds)')
+        ax1.set_ylabel('Amplitude')
         ax1.grid(True, alpha=0.3)
         
-        # 2. Спектрограмма
+        # 2. Spectrogram
         f, t, Sxx = spectrogram(self.audio_data, audio_sample_rate, nperseg=2048, noverlap=1024)
         
-        # Ограничиваем частотный диапазон
+        # Limit frequency range
         max_display_freq = params['max_freq'] * 2
         freq_mask = (f >= params['min_freq'] * 0.5) & (f <= max_display_freq)
         f_filtered = f[freq_mask]
@@ -505,25 +505,25 @@ class DataSonifier:
         
         im = ax2.pcolormesh(t, f_filtered, 10 * np.log10(Sxx_filtered + 1e-10), 
                            shading='gouraud', cmap='hot')
-        ax2.set_title('Спектрограмма аудио')
-        ax2.set_xlabel('Время (секунды)')
-        ax2.set_ylabel('Частота (Гц)')
+        ax2.set_title('Audio Spectrogram')
+        ax2.set_xlabel('Time (seconds)')
+        ax2.set_ylabel('Frequency (Hz)')
         
-        # Цветовая шкала
-        plt.colorbar(im, ax=ax2, label='Мощность (дБ)')
+        # Color bar
+        plt.colorbar(im, ax=ax2, label='Power (dB)')
         
-        # Линии частотного диапазона
+        # Frequency range lines
         ax2.axhline(y=params['min_freq'], color='cyan', linestyle='--', alpha=0.8, linewidth=2, 
-                   label=f'Мин. частота: {params["min_freq"]} Гц')
+                   label=f'Min frequency: {params["min_freq"]} Hz')
         ax2.axhline(y=params['max_freq'], color='magenta', linestyle='--', alpha=0.8, linewidth=2,
-                   label=f'Макс. частота: {params["max_freq"]} Гц')
+                   label=f'Max frequency: {params["max_freq"]} Hz')
         
         ax2.legend()
         
-        # Информация о параметрах
-        ax2.text(0.02, 0.98, f'Диапазон частот: {params["min_freq"]}-{params["max_freq"]} Гц\n'
-                              f'Скорость: {params["speed_percentage"]}%\n'
-                              f'Режим: чистый синус', 
+        # Parameter information
+        ax2.text(0.02, 0.98, f'Frequency range: {params["min_freq"]}-{params["max_freq"]} Hz\n'
+                              f'Speed: {params["speed_percentage"]}%\n'
+                              f'Mode: pure sine wave', 
                  transform=ax2.transAxes, verticalalignment='top', color='white',
                  bbox=dict(boxstyle='round', facecolor='black', alpha=0.7))
         
@@ -540,11 +540,11 @@ def main():
     import matplotlib
     import soundfile as sf
     
-    print("✅ Зависимости проверены")
-    print(f"   • Python: {sys.version.split()[0]}")
-    print(f"   • NumPy: {np.__version__}")
-    print(f"   • SciPy: {scipy.__version__}")
-    print(f"   • Matplotlib: {matplotlib.__version__}")
+    print(" Dependencies checked")
+    print(f" Python: {sys.version.split()[0]}")
+    print(f" NumPy: {np.__version__}")
+    print(f" SciPy: {scipy.__version__}")
+    print(f" Matplotlib: {matplotlib.__version__}")
     print()
     
     sonifier = DataSonifier()
@@ -552,14 +552,14 @@ def main():
     
     if len(sys.argv) > 1:
         filename = sys.argv[1]
-        print(f"📁 Файл: {filename}")
+        print(f" File: {filename}")
     else:
-        filename = input("Введите путь к файлу: ").strip()
+        filename = input("Enter file path: ").strip()
     
     filename = filename.strip('"\'')
     
     if not filename:
-        print("❌ Путь не указан!")
+        print(" Path not specified!")
         return
     
     if not sonifier.load_file(filename):
@@ -569,7 +569,7 @@ def main():
     if not stats:
         return
     
-    print("\n📈 Строю график...")
+    print("\n Plotting graph...")
     if not sonifier.plot_raw_data():
         return
     
@@ -578,11 +578,11 @@ def main():
     if not sonifier.process_data(params):
         return
     
-    # Генерация аудио с чистым синусом
+    # Generate audio with pure sine wave
     if not sonifier.generate_audio(params):
         return
     
-    output_filename = input("Имя файла [output.wav]: ").strip()
+    output_filename = input("Output filename [output.wav]: ").strip()
     if not output_filename:
         output_filename = "output.wav"
     
@@ -591,24 +591,25 @@ def main():
     
     sonifier.save_audio(output_filename)
     
-    print("\n📊 ВИЗУАЛИЗАЦИЯ РЕЗУЛЬТАТОВ:")
-    print("   1 - Сравнение данных со спектрограммой (4 графика)")
-    print("   2 - Детальная спектрограмма аудио")
-    print("   3 - Пропустить визуализацию")
+    print("\n VISUALIZATION OPTIONS:")
+    print(" 1 - Data comparison with spectrogram (4 plots)")
+    print(" 2 - Detailed audio spectrogram")
+    print(" 3 - Skip visualization")
     
-    viz_choice = input("Выберите вариант [1]: ").strip()
+    viz_choice = input("Choose option [1]: ").strip()
     
     if viz_choice == '2':
         sonifier.plot_spectrogram_detail(params)
     elif viz_choice in ('1', ''):
         sonifier.plot_processed_comparison(params)
     
-    print("\n🎉 Преобразование завершено!")
+    print("\n Conversion completed!")
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n👋 Программа прервана")
+        print("\n Program interrupted")
     except Exception as e:
-        print(f"\n❌ Ошибка: {e}")
+        print(f"\n Error: {e}")
+        
