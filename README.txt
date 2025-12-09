@@ -1,66 +1,67 @@
-Инструкция по установке и запуску DataSonifier
+DataSonifier Installation and Launch Guide
 
-О программе:
+About the Program:
 
-	DataSonifier - это инструмент для сонификации научных данных
+	DataSonifier - a tool for sonification of scientific data
 
-	Преобразуйте данные из PowerGraph в звук - слушайте ваши эксперименты!
+	Convert data from PowerGraph to sound - listen to your experiments!
 
-	Open Source решение от art&science исследовательской группы KVEF
+	Open Source solution from the KVEF art&science research group
 
-Установка программы:
+Program Installation:
 
-1. Установите Python 3.10
-Скачайте с официального сайта: https://www.python.org/downloads/release/python-31011/
+1. Install Python 3.10 or later
+Download from the official website: https://www.python.org/downloads/release/python-31011/
 
-Важно при установке:
+Important during installation:
 
-	✅ Отметьте галочку "Add Python to PATH" (это критически важно!)
+	Check the box "Add Python to PATH" (this is critical!)
 
-	✅ Выберите опцию "Install Now"
+	Choose the "Install Now" option
 
-2. Установите зависимостей
+2. Install Dependencies
 
 Windows:
 
-	Откройте командную строку (Win + R → введите cmd → Enter)
+	Open Command Prompt (Win + R → type cmd → Enter)
 
-	Перейдите в папку с программой:
+	Navigate to the program folder:
 
 	cmd
-		cd C:\ПУТЬ\К\ПАПКЕ\datasonifier
+		cd C:\path\to\datasonifier
 
-	Установите зависимости:
+	Install dependencies:
 
 	cmd
 		pip install -r requirements.txt
 
 macOS:
 
-	Откройте Терминал (Finder → Программы → Утилиты → Терминал)
+	Open Terminal (Finder → Applications → Utilities → Terminal)
 
-	Перейдите в папку с программой:
+	Navigate to the program folder:
 
 	bash
-		cd /ПУТЬ/К/ПАПКЕ/datasonifier
-	Установите зависимости:
+		cd /path/to/datasonifier
+	Install dependencies:
 
 	bash
 		pip3 install -r requirements.txt
+
 Linux:
 
-	Откройте терминал
+	Open terminal
 
-	Перейдите в папку с программой:
+	Navigate to the program folder:
 
 	bash
-		cd /ПУТЬ/К/ПАПКЕ/datasonifier
-	Установите зависимости:
+		cd /path/to/datasonifier
+	Install dependencies:
 
 	bash
 		pip3 install -r requirements.txt
 
-3. Проверка установки
+3. Verify Installation
 
 Windows:
 
@@ -72,124 +73,151 @@ macOS/Linux:
 	bash
 		python3 check_environment.py
 
-✅ Должно появиться: "Окружение настроено правильно!"
+Should display: "Environment is properly configured!"
 
-Запуск программы
+Launching the Program
 
-Способ 1: Указать файл при запуске (рекомендуется)
+Method 1: Specify file at launch (recommended)
 
 Windows:
 
 	cmd
-		cd C:\ПУТЬ\К\ПАПКЕ\datasonifier
-		py -3.10 datasonifier.py C:\ПУТЬ\К\ФАЙЛУ\данные.txt
+		cd C:\path\to\datasonifier
+		py -3.10 datasonifier.py C:\path\to\data\experiment_data.txt
 
 macOS/Linux:
 
 	bash
-		cd /ПУТЬ/К/ПАПКЕ/datasonifier
-		python3 datasonifier.py /ПУТЬ/К/ФАЙЛУ/данные.txt
+		cd /path/to/datasonifier
+		python3 datasonifier.py /path/to/data/experiment_data.txt
 
-Способ 2: Интерактивный ввод файла
+Method 2: Interactive file input
 
 Windows:
 
 	cmd
-		cd C:\ПУТЬ\К\ПАПКЕ\datasonifier
+		cd C:\path\to\datasonifier
 		py -3.10 datasonifier.py
 
-	Затем введите путь к файлу когда программа запросит
+	Then enter the file path when prompted by the program
 
 macOS/Linux:
 
 	bash
-		cd /ПУТЬ/К/ПАПКЕ/datasonifier
+		cd /path/to/datasonifier
 		python3 datasonifier.py
 
-	Затем введите путь к файлу когда программа запросит
+	Then enter the file path when prompted by the program
 
-Формат входного файла
+Input File Format
 
-Программа ожидает текстовый файл в формате:
+DataSonifier directly works with annotated data exported from PowerGraph in TXT format with proper metadata headers.
 
-text
+The program expects a text file in the following format:
+
+Block 3
+Title:
+ADC:	E-440
+Module:	E-440
+Started:	03/12/2025 11:32:54 PM
+Channels:	1
 Rate:	1000
 Step:	0.001
 Duration:	10.0
 Size:	10000
-Time, s	Data, V
+Time, s	Channel 1, V
 0.000	0.124
 0.001	0.135
 0.002	0.128
 ...
 
+Data Conversion (for non-PowerGraph data)
 
-Примеры реальных путей
+The package includes a converter tool that prepares data from other formats:
+
+1. For L-graph format data
+2. For unannotated CSV files
+
+Use the converter to add necessary metadata before processing in DataSonifier:
+
+Windows:
+	cmd
+		python converter.py your_data.csv
+
+macOS/Linux:
+	bash
+		python3 converter.py your_data.csv
+
+The converter will guide you through adding ADC information, sampling rate, and other metadata, creating a properly formatted TXT file ready for DataSonifier processing.
+
+Example Path Formats
 
 Windows:
 
-	C:\Users\Ivanov\Desktop\datasonifier\experiment_data.txt
+	C:\Users\[username]\Desktop\datasonifier\experiment_data.txt
 
 	D:\Research\data_measurements.txt
 
 macOS:
 
-	/Users/annasmith/Documents/datasonifier/experiment_data.txt
+	/Users/[username]/Documents/datasonifier/experiment_data.txt
 
 	/Desktop/lab_measurements.txt
 
 Linux:
 
-	/home/user/datasonifier/experiment_data.txt
+	/home/[username]/datasonifier/experiment_data.txt
 
-	/home/user/Downloads/lab_data.txt
+	/home/[username]/Downloads/lab_data.txt
 
-Решение частых проблем
+Troubleshooting Common Issues
 
-❌ Если команда python не работает:
+If the python command doesn't work:
 
-	Windows: Используйте py -3.10 вместо python
-	macOS/Linux: Используйте python3 вместо python
+	Windows: Use py -3.10 instead of python
+	macOS/Linux: Use python3 instead of python
 
-❌ Если команда pip не работает:
+If the pip command doesn't work:
 
-	Windows: Используйте py -3.10 -m pip
-	macOS/Linux: Используйте python3 -m pip
+	Windows: Use py -3.10 -m pip
+	macOS/Linux: Use python3 -m pip
 
-❌ Если файл не найден:
+If the file is not found:
 
-	Убедитесь, что путь указан правильно
+	Make sure the path is correct and the file exists
 
-Используйте двойные кавычки если в пути есть пробелы:
+	Use double quotes if the path contains spaces:
 
 	cmd
 		py -3.10 datasonifier.py "C:\My Documents\data file.txt"
 
-❌ Если графики не показываются:
+If graphs don't display:
 
-	cmd
-		pip install tk
+	Windows: Tkinter is usually included with Python. If not, reinstall Python with the Tk/Tcl option selected
+	macOS/Linux: Install tkinter using your package manager (e.g., `sudo apt-get install python3-tk` on Ubuntu)
 
+What to Do After Launch
 
-Быстрый запуск (для Windows)
+1. The program will display a graph of your data - review it and close the window
+2. The program will then ask you several questions about the data conversion characteristics
 
-Создайте файл запуск.bat в папке с программой:
+Simple workflow:
+  1. The program analyzes and automatically scales the data to a range from 0 to 1, displaying these graphs
+  2. You set upper and lower thresholds for data trimming
+  3. Configure sound parameters: lowest and highest frequency, smoothing coefficient, and playback speed (can be slowed down or sped up)
+  4. Specify a file name - and receive a WAV file with a sinusoidal signal for each recording channel
 
-	bat
-		@echo off
-		cd /d "C:\ПУТЬ\К\ПАПКЕ\datasonifier"
-		py -3.10 datasonifier.py
-		pause
+Use Cases:
 
-	Теперь просто запускайте двойным кликом по этому файлу!
+1. Sound creation: The resulting WAV file can be processed in any DAW (Digital Audio Workstation like Ableton Live, FL Studio, Logic Pro) or audio programming environments like Max MSP, Pure Data, or SuperCollider to create a full musical composition based on the data
+2. Control signal: Set the lowest frequency to 0 Hz and the highest, for example, to 1 Hz, and use the resulting file as a low-frequency control signal (LFO) to modulate parameters of another synthesizer or effect in Max MSP, Pure Data, or modular synthesizers
+3. Score generation: Use the pitch information from the audio file to write a score for any acoustic instrument or voice
+4. Educational demonstrations: Visualize and sonify scientific phenomena to make them more accessible in educational settings
+5. Data exploration: Listen to patterns in data that might not be immediately visible in visual plots
 
-Что делать после запуска
+Tips for Best Results:
 
-Программа покажет график ваших данных
-
-Настройте параметры преобразования (частоты, пороги)
-
-Программа создаст WAV-файл с преобразованным звуком
-
-Выберите вариант визуализации результатов
-
+- Start with small datasets to understand the conversion process
+- Experiment with different frequency ranges to find what works best for your data
+- Use the scaling and trimming options to focus on the most interesting parts of your data
+- Save your parameter settings for reproducible results
